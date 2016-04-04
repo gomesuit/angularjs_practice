@@ -1,0 +1,75 @@
+<!doctype html>
+<html ng-app="myApp">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+  </head>
+  <body>
+    <h2>Todo</h2>
+    <div ng-controller="TodoCtrl as ctrl">
+      <span>残り:{{ctrl.remaining()}}/{{ctrl.todos.length}}</span>
+      [ <a href="" ng-click="ctrl.archive()">完了</a> ]
+      <ul class="unstyled">
+        <li ng-repeat="todo in ctrl.todos">
+          <input type="checkbox" ng-model="todo.done">
+          <span class="done-{{todo.done}}">{{todo.text}}</span>
+        </li>
+      </ul>
+      <form ng-submit="ctrl.addTodo()">
+        <input type="text" ng-model="ctrl.todoText" size="30" placeholder="新しいTODOを追加">
+        <input class="btn-primary" type="submit" value="追加">
+      </form>
+      <form ng-submit="ctrl.doSearch()">
+        <input class="btn-primary" type="submit" value="AA">
+      </form>
+      <ul class="unstyled">
+        <li ng-repeat="kindle in ctrl.kindles">
+          <span>{{kindle.asin}}</span>
+        </li>
+      </ul>
+      <span>{{ctrl.asin}}</span>
+    </div>
+  </body>
+
+<script>
+
+angular.module('myApp', [])
+  .controller('TodoCtrl', TodoCtrl)
+
+function TodoCtrl($http){
+  this.todos = [
+    {text:'AngularJSの学習', done:true},
+    {text:'AngularJSのアプリケーション構築', done:false}];
+  
+  this.addTodo = function() {
+    this.todos.push({text:this.todoText, done:false});
+    this.todoText = '';
+  };
+
+  this.remaining = function() {
+    var count = 0;
+    angular.forEach(this.todos, function(todo) {
+      count += todo.done ? 0 : 1;
+    });
+    return count;
+  };
+  
+  this.archive = function() {
+    var oldTodos = this.todos;
+    this.todos = [];
+    angular.forEach(oldTodos, function(todo) {
+      if (!todo.done) this.todos.push(todo);
+    });
+  };
+  
+  this.doSearch = function() {
+    $http.get('http://localhost/api/tile').success(function(data, status, headers, config){
+      console.log(data[0]);
+      this.kindles = data[0];
+      this.asin = data[0].asin;
+    });
+  };
+
+}
+
+</script>
+</html>
