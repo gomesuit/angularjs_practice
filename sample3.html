@@ -19,14 +19,22 @@
         <input class="btn-primary" type="submit" value="追加">
       </form>
       <form ng-submit="ctrl.doSearch()">
-        <input class="btn-primary" type="submit" value="AA">
+        <input class="btn-primary" type="submit" value="kindle">
+      </form>
+      <form ng-submit="ctrl.doSearch3()">
+        <input class="btn-primary" type="submit" value="json">
       </form>
       <ul class="unstyled">
-        <li ng-repeat="kindle in ctrl.kindles">
+        <li ng-repeat="kindle in kindles">
           <span>{{kindle.asin}}</span>
         </li>
       </ul>
-      <span>{{ctrl.asin}}</span>
+      <table class="table">
+        <tr ng-repeat="result in results">
+          <td>{{result.id}}</td>
+          <td>{{result.name}}</td>
+        </tr>
+      </table>
     </div>
   </body>
 
@@ -35,7 +43,7 @@
 angular.module('myApp', [])
   .controller('TodoCtrl', TodoCtrl)
 
-function TodoCtrl($http){
+function TodoCtrl($scope, $http){
   this.todos = [
     {text:'AngularJSの学習', done:true},
     {text:'AngularJSのアプリケーション構築', done:false}];
@@ -63,9 +71,21 @@ function TodoCtrl($http){
   
   this.doSearch = function() {
     $http.get('http://localhost/api/tile').success(function(data, status, headers, config){
-      console.log(data[0]);
-      this.kindles = data[0];
-      this.asin = data[0].asin;
+      console.log(data);
+      $scope.kindles = data;
+    });
+  };
+
+  this.doSearch3 = function() {
+    $http({
+        method : 'GET',
+        url : 'http://hkusu.github.io/AngularJS_apicall_demo/data/sample.json'
+    }).success(function(data, status, headers, config) {
+        $scope.results = data.data;
+        console.log(status);
+        console.log(data);
+    }).error(function(data, status, headers, config) {
+        console.log(status);
     });
   };
 
