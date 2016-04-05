@@ -18,8 +18,8 @@
 
 </head>
 <body>
-  <div ng-controller="TodoCtrl as ctrl">
-    <form ng-submit="ctrl.doSearch()">
+  <div ng-controller="TodoCtrl">
+    <form ng-submit="doSearch()">
       <input class="btn btn-primary" type="submit" value="kindle">
     </form>
     <table class="table">
@@ -36,7 +36,7 @@
           <td>{{kindle.asin}}</td>
           <td>{{kindle.title}}</td>
           <td>
-            <img class="img-thumbnail" src="{{kindle.mediumImage}}" alt="largeImage"/>
+            <img class="img-thumbnail" ng-src="{{kindle.mediumImage}}" alt="largeImage"/>
           </td>
           <td>{{kindle.releaseDate}}</td>
         </tr>
@@ -53,7 +53,7 @@ angular.module('myApp', [])
 
 function TodoCtrl($scope, $http){
   
-  this.doSearch = function() {
+  $scope.doSearch = function() {
     $http({
         method : 'GET',
         url : 'http://localhost/api/tile',
