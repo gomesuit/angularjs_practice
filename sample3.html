@@ -23,13 +23,13 @@
       <input class="btn btn-primary" type="submit" value="kindle">
     </form>
     
-    <input type="checkbox" ng-model="limitedFree" ng-change="doSearch()">
+    <input type="checkbox" ng-model="limitedFree" ng-change="listClear(); doSearch()">
     <span>期間限定無料</span>
 
-    <select class="form-control" ng-model="order" ng-options="item.label for item in orders" ng-change="doSearch()">
+    <select class="form-control" ng-model="order" ng-options="item.label for item in orders" ng-change="listClear(); doSearch()">
     </select>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" when-scrolled='doSearch()'>
       <thead>
         <tr>
           <th>asin</th>
@@ -58,6 +58,7 @@
 <script>
 angular.module('myApp', [])
   .controller('TodoCtrl', TodoCtrl)
+  .directive('whenScrolled', WhenScrolled)
 
 function TodoCtrl($scope, $http){
   $scope.orders = [
@@ -65,13 +66,15 @@ function TodoCtrl($scope, $http){
     {label:'発売日昇順', value:2 },
     {label:'登録日時降順', value:3 },
     {label:'削除日時降順', value:4 }
-  ]
+  ];
   $scope.order = $scope.orders[0];
 
+  $scope.kindles = [];
+  $scope.page = 1;
   
   $scope.doSearch = function() {
     var parameter = {
-      page: 1,
+      page: $scope.page,
       limitedFree : $scope.limitedFree,
       order : $scope.order.value
     }
@@ -84,7 +87,8 @@ function TodoCtrl($scope, $http){
 
     .success(function(data, status, headers, config) {
       console.log(data);
-      $scope.kindles = data;
+      $scope.kindles = $scope.kindles.concat(data);
+      $scope.page++;
     })
 
     .error(function(data, status, headers, config) {
@@ -92,6 +96,22 @@ function TodoCtrl($scope, $http){
     });
   };
 
+  $scope.listClear = function(){
+    $scope.kindles = [];
+    $scope.page = 1;
+  }
+
   $scope.doSearch()
+}
+
+function WhenScrolled($window) {
+  return function(scope, elem, attr) {
+    var raw = elem[0];
+    angular.element($window).bind('scroll',  function() {
+      if (raw.offsetHeight < window.innerHeight + window.scrollY) {
+        scope.$apply(attr.whenScrolled);
+      }
+    });
+  };
 }
 </script>
