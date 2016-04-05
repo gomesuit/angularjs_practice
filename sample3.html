@@ -22,7 +22,8 @@
     <form ng-submit="doSearch()">
       <input class="btn btn-primary" type="submit" value="kindle">
     </form>
-    <table class="table">
+
+    <table class="table table-bordered">
       <thead>
         <tr>
           <th>asin</th>
@@ -32,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="kindle in kindles">
+        <tr ng-repeat="kindle in kindles" style="height:100px">
           <td>{{kindle.asin}}</td>
           <td>{{kindle.title}}</td>
           <td>
@@ -42,6 +43,7 @@
         </tr>
       </tbody>
     </table>
+
   </div>
 </body>
 </html>
@@ -57,7 +59,7 @@ function TodoCtrl($scope, $http){
     $http({
         method : 'GET',
         url : 'http://localhost/api/tile',
-        params : { page: 2 }
+        params : { page: 1 }
     })
 
     .success(function(data, status, headers, config) {
@@ -70,5 +72,6 @@ function TodoCtrl($scope, $http){
     });
   };
 
+  $scope.doSearch()
 }
 </script>
