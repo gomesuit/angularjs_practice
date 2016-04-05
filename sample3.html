@@ -4,35 +4,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
   </head>
   <body>
-    <h2>Todo</h2>
     <div ng-controller="TodoCtrl as ctrl">
-      <span>残り:{{ctrl.remaining()}}/{{ctrl.todos.length}}</span>
-      [ <a href="" ng-click="ctrl.archive()">完了</a> ]
-      <ul class="unstyled">
-        <li ng-repeat="todo in ctrl.todos">
-          <input type="checkbox" ng-model="todo.done">
-          <span class="done-{{todo.done}}">{{todo.text}}</span>
-        </li>
-      </ul>
-      <form ng-submit="ctrl.addTodo()">
-        <input type="text" ng-model="ctrl.todoText" size="30" placeholder="新しいTODOを追加">
-        <input class="btn-primary" type="submit" value="追加">
-      </form>
       <form ng-submit="ctrl.doSearch()">
         <input class="btn-primary" type="submit" value="kindle">
       </form>
-      <form ng-submit="ctrl.doSearch3()">
-        <input class="btn-primary" type="submit" value="json">
-      </form>
-      <ul class="unstyled">
-        <li ng-repeat="kindle in kindles">
-          <span>{{kindle.asin}}</span>
-        </li>
-      </ul>
       <table class="table">
-        <tr ng-repeat="result in results">
-          <td>{{result.id}}</td>
-          <td>{{result.name}}</td>
+        <tr ng-repeat="kindle in kindles">
+          <td>{{kindle.asin}}</td>
         </tr>
       </table>
     </div>
@@ -44,46 +22,14 @@ angular.module('myApp', [])
   .controller('TodoCtrl', TodoCtrl)
 
 function TodoCtrl($scope, $http){
-  this.todos = [
-    {text:'AngularJSの学習', done:true},
-    {text:'AngularJSのアプリケーション構築', done:false}];
-  
-  this.addTodo = function() {
-    this.todos.push({text:this.todoText, done:false});
-    this.todoText = '';
-  };
-
-  this.remaining = function() {
-    var count = 0;
-    angular.forEach(this.todos, function(todo) {
-      count += todo.done ? 0 : 1;
-    });
-    return count;
-  };
-  
-  this.archive = function() {
-    var oldTodos = this.todos;
-    this.todos = [];
-    angular.forEach(oldTodos, function(todo) {
-      if (!todo.done) this.todos.push(todo);
-    });
-  };
   
   this.doSearch = function() {
-    $http.get('http://localhost/api/tile').success(function(data, status, headers, config){
-      console.log(data);
-      $scope.kindles = data;
-    });
-  };
-
-  this.doSearch3 = function() {
     $http({
         method : 'GET',
-        url : 'http://hkusu.github.io/AngularJS_apicall_demo/data/sample.json'
+        url : 'http://localhost/api/tile'
     }).success(function(data, status, headers, config) {
-        $scope.results = data.data;
-        console.log(status);
-        console.log(data);
+      console.log(data);
+      $scope.kindles = data;
     }).error(function(data, status, headers, config) {
         console.log(status);
     });
