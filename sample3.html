@@ -26,6 +26,9 @@
     <input type="checkbox" ng-model="limitedFree" ng-change="doSearch()">
     <span>期間限定無料</span>
 
+    <select class="form-control" ng-model="order" ng-options="item.label for item in orders" ng-change="doSearch()">
+    </select>
+
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -57,12 +60,26 @@ angular.module('myApp', [])
   .controller('TodoCtrl', TodoCtrl)
 
 function TodoCtrl($scope, $http){
+  $scope.orders = [
+    {label:'発売日降順', value:1 },
+    {label:'発売日昇順', value:2 },
+    {label:'登録日時降順', value:3 },
+    {label:'削除日時降順', value:4 }
+  ]
+  $scope.order = $scope.orders[0];
+
   
   $scope.doSearch = function() {
+    var parameter = {
+      page: 1,
+      limitedFree : $scope.limitedFree,
+      order : $scope.order.value
+    }
+
     $http({
         method : 'GET',
         url : 'http://localhost/api/tile',
-        params : { page: 1, limitedFree : $scope.limitedFree }
+        params : parameter
     })
 
     .success(function(data, status, headers, config) {
