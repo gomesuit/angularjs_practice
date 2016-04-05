@@ -1,23 +1,53 @@
-<!doctype html>
-<html ng-app="myApp">
-  <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
-  </head>
-  <body>
-    <div ng-controller="TodoCtrl as ctrl">
-      <form ng-submit="ctrl.doSearch()">
-        <input class="btn-primary" type="submit" value="kindle">
-      </form>
-      <table class="table">
+<!DOCTYPE html>
+<html lang="ja" ng-app="myApp">
+<head>
+  <meta content="ja" http-equiv="Content-Language" />
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <div ng-controller="TodoCtrl as ctrl">
+    <form ng-submit="ctrl.doSearch()">
+      <input class="btn btn-primary" type="submit" value="kindle">
+    </form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>asin</th>
+          <th>title</th>
+          <th>mediumImage</th>
+          <th>releaseDate</th>
+        </tr>
+      </thead>
+      <tbody>
         <tr ng-repeat="kindle in kindles">
           <td>{{kindle.asin}}</td>
+          <td>{{kindle.title}}</td>
+          <td>
+            <img class="img-thumbnail" src="{{kindle.mediumImage}}" alt="largeImage"/>
+          </td>
+          <td>{{kindle.releaseDate}}</td>
         </tr>
-      </table>
-    </div>
-  </body>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+
 
 <script>
-
 angular.module('myApp', [])
   .controller('TodoCtrl', TodoCtrl)
 
@@ -26,16 +56,19 @@ function TodoCtrl($scope, $http){
   this.doSearch = function() {
     $http({
         method : 'GET',
-        url : 'http://localhost/api/tile'
-    }).success(function(data, status, headers, config) {
+        url : 'http://localhost/api/tile',
+        params : { page: 2 }
+    })
+
+    .success(function(data, status, headers, config) {
       console.log(data);
       $scope.kindles = data;
-    }).error(function(data, status, headers, config) {
-        console.log(status);
+    })
+
+    .error(function(data, status, headers, config) {
+      console.log(status);
     });
   };
 
 }
-
 </script>
-</html>
