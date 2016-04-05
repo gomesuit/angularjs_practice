@@ -33,11 +33,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="kindle in kindles" style="height:100px">
+        <tr ng-repeat="kindle in kindles" style="height:200px">
           <td>{{kindle.asin}}</td>
           <td>{{kindle.title}}</td>
           <td>
-            <img class="img-thumbnail" ng-src="{{kindle.mediumImage}}" alt="largeImage"/>
+            <img class="img-thumbnail col-md-2" ng-src="{{kindle.mediumImage}}" alt="largeImage"/>
           </td>
           <td>{{kindle.releaseDate}}</td>
         </tr>
